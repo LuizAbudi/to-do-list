@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./HomePage.css";
-import { Button, Checkbox } from "antd";
+import { Button, Checkbox, Form, Input, Modal } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -11,31 +11,22 @@ import {
 function HomePage() {
   const [tasks, setTasks] = useState([]);
   const [selectTasks, setSelectTasks] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [taskTitle, setTaskTitle] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+  const [showDescriptionTaskId, setShowDescriptionTaskId] = useState(null);
 
   const adicionarTarefa = () => {
     const task = {
       id: tasks.length + 1,
-      title: novaTarefa(),
-      descripition: novaDescricao(),
+      title: taskTitle,
+      descripition: taskDescription,
       done: false,
     };
     setTasks([...tasks, task]);
-  };
-
-  const novaTarefa = () => {
-    const task = prompt("Digite o nome da tarefa");
-    if (task === null || task === "") {
-      return novaTarefa();
-    }
-    return task;
-  };
-
-  const novaDescricao = () => {
-    const task = prompt("Digite a descrição da tarefa");
-    if (task === null || task === "") {
-      return novaDescricao();
-    }
-    return task;
+    setIsModalOpen(false);
+    setTaskTitle("");
+    setTaskDescription("");
   };
 
   const moveTaksToCompleted = () => {
@@ -82,6 +73,27 @@ function HomePage() {
     return task;
   };
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const showTaskDescription = () => {
+    if (selectTasks.length === 1) {
+      // Verifica se apenas uma tarefa está selecionada
+      setShowDescriptionTaskId(selectTasks[0]);
+    } else {
+      alert("Por favor, selecione apenas uma tarefa para ver a descrição.");
+    }
+  };
+
   return (
     <div className="all">
       <h1 id="header">Lista de Tarefas</h1>
@@ -91,18 +103,63 @@ function HomePage() {
             <div className="board-header">
               <h2>A fazer</h2>
               <div style={{ color: "white", fontSize: "20px", float: "right" }}>
-                <Button onClick={adicionarTarefa}>
-                  <PlusCircleOutlined />
-                </Button>
                 <Button onClick={moveTaksToCompleted}>
                   <RightOutlined />
                 </Button>
                 <Button onClick={editTask}>
                   <EditOutlined />
                 </Button>
+                <Button onClick={showModal}>
+                  <PlusCircleOutlined />
+                </Button>
               </div>
             </div>
-
+            <Modal
+              title="Adicione uma nova tarefa"
+              open={isModalOpen}
+              onOk={handleOk}
+              onCancel={handleCancel}
+            >
+              <Form
+                style={{
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <Form.Item>
+                  <label
+                    style={{ justifyContent: "flex-start", display: "flex" }}
+                  >
+                    Título:
+                  </label>
+                  <Input
+                    type="text"
+                    value={taskTitle}
+                    onChange={(e) => setTaskTitle(e.target.value)}
+                  />
+                </Form.Item>
+                <Form.Item>
+                  <label
+                    style={{ justifyContent: "flex-start", display: "flex" }}
+                  >
+                    Descrição:
+                  </label>
+                  <Input.TextArea
+                    type="text"
+                    value={taskDescription}
+                    onChange={(e) => setTaskDescription(e.target.value)}
+                  />
+                </Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={adicionarTarefa}
+                >
+                  Adicionar
+                </Button>
+              </Form>
+            </Modal>
             <ul>
               {tasks
                 .filter((task) => !task.done)
@@ -151,6 +208,7 @@ function HomePage() {
                     fontWeight: "bold",
                     marginRight: "10px",
                   }}
+                  onClick={showTaskDescription}
                 >
                   Show descripition
                 </Button>
@@ -171,20 +229,24 @@ function HomePage() {
               {tasks
                 .filter((task) => task.done)
                 .map((task) => (
-                  <Checkbox
-                    onChange={(e) =>
-                      handleSelectTask(task.id, e.target.checked)
-                    }
-                  >
-                    <li
-                      key={task.id}
-                      style={{
-                        textDecoration: task.done ? "line-through" : "none",
-                      }}
+                  <div key={task.id}>
+                    <Checkbox
+                      onChange={(e) =>
+                        handleSelectTask(task.id, e.target.checked)
+                      }
                     >
-                      {task.title}
-                    </li>
-                  </Checkbox>
+                      <li
+                        style={{
+                          textDecoration: task.done ? "line-through" : "none",
+                        }}
+                      >
+                        {task.title}
+                      </li>
+                    </Checkbox>
+                    {showDescriptionTaskId === task.id && (
+                      <p>Descrição: {task.descripition}</p>
+                    )}
+                  </div>
                 ))}
             </ul>
           </div>
