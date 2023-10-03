@@ -1,0 +1,70 @@
+.App {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 15px;
+    height: 100vh;
+}
+.all{
+    background-color: black;
+}
+
+.all #header{
+    border-bottom: solid white;
+    margin: 0;
+    text-align: center;
+    padding: 25px;
+    color: white;
+    
+}
+
+.boards {
+    display: flex;
+    gap: 2rem;
+}
+
+.board {
+    width: 600px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    color: white;
+    background-color: rgb(0, 0, 0);
+}
+
+.board-header {
+    text-align: left;
+    margin:  0;
+    border-bottom: solid white;
+    color: white;
+    display: flex;    
+    align-items: center;
+    font-size: 20px;
+    justify-content: space-between
+}
+
+.board-header button{   
+    justify-content: flex-end;
+    background: none;
+    align-items: center;
+    color: white;
+    font-size: 18px;
+    float: right;           
+    text-align: right;
+    border: none;
+}
+
+.board ul{
+    list-style: none;
+    padding: 5px;
+    margin: 5px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+.board li{
+    color: white;
+    font-size: 18px;
+    
+}
